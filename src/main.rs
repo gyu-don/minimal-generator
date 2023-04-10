@@ -1,6 +1,6 @@
-use minimal_generator::Co;
+use minimal_generator::{Co, Gen};
 
-async fn fib_generator(mut co: Co<u64>) {
+async fn fib_producer(mut co: Co<u64>) {
     let mut a = 1u64;
     let mut b = 1u64;
     loop {
@@ -11,8 +11,15 @@ async fn fib_generator(mut co: Co<u64>) {
 
 fn main() {
     // fibは、フィボナッチ数列を返すGeneratorとして定義したい
-    // let fib = fib_generator(??);
+    let fib = Gen::new(fib_producer);
     // 先頭10個のfibの中身を取り出したい
-    // let mut gen = fib()
-    // for _ in 0..10 { ... }
+    // for _ in 0..10 {
+    //     match fib.resume() {
+    //         Yielded(n) => println!("{}", n);
+    //         Complete => {
+    //             println!("Generator is completed.");
+    //             break;
+    //         }
+    //     }
+    // }
 }
