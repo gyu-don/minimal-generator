@@ -16,7 +16,7 @@ impl<T> Co<T> {
 
     pub fn yield_(&mut self, value: T) -> impl Future<Output=()> + '_ {
         self.0.replace(Some(value));
-        ResumeListner(&self.0)
+        Barrier(&self.0)
     }
 }
 
@@ -43,8 +43,8 @@ fn advance<T, F: Future>(future: Pin<&mut F>, airlock: &Airlock<T>) -> Generator
     unimplemented!();
 }
 
-pub struct ResumeListner<'a, T>(&'a Airlock<T>);
-impl<'a, T> Future for ResumeListner<'a, T> {
+pub struct Barrier<'a, T>(&'a Airlock<T>);
+impl<'a, T> Future for Barrier<'a, T> {
     type Output = ();
 
     fn poll(self: Pin<&mut Self>, _cx: &mut Context<'_>) -> Poll<Self::Output> {
