@@ -1,5 +1,10 @@
 use std::{rc::Rc, cell::Cell, future::Future, pin::Pin};
 
+pub enum GeneratorState<T> {
+    Yielded(T),
+    Complete,
+}
+
 type Airlock<T> = Rc<Cell<Option<T>>>;
 pub struct Co<T> (Airlock<T>);
 
@@ -24,6 +29,15 @@ impl<T, F: Future> Gen<T, F> {
         let future = Box::pin(producer(Co::new(airlock.clone())));
         Self { airlock, future }
     }
+
+    pub fn resume(&mut self) -> GeneratorState<T> {
+        self.airlock.replace(None);
+        advance(self.future.as_mut(), &self.airlock)
+    }
+}
+
+fn advance<T, F: Future>(future: Pin<&mut F>, airlock: &Airlock<T>) -> GeneratorState<T> {
+    unimplemented!();
 }
 
 pub struct DummyFuture();
